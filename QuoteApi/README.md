@@ -15,7 +15,7 @@ python -m pip install -r requirements.txt
 ```
 4. Применить миграции
 ```
-flask db migrate
+flask db upgrade
 ```
 5. Запустить приложение
 ```
