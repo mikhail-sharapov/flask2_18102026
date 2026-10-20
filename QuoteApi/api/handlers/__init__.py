@@ -24,7 +24,7 @@ def check(data: dict, check_rating=False) -> tuple[bool, dict]:
 
 
 def check_author_data(data: dict) -> tuple[bool, dict]:
-    keys = ('name',)
+    keys = ('name','surname')
     if set(data.keys()) - set(keys):
         return False, {"error": "Invalid fields to update author"}
     return True, data
