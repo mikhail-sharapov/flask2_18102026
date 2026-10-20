@@ -17,4 +17,4 @@ db.init_app(app)
 migrate = Migrate(app, db)
 
 # TODO Обязательно добавить импорт для обработчиков author и quote
-
+from api.handlers import author, quote
