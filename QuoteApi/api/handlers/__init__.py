@@ -21,3 +21,10 @@ def check(data: dict, check_rating=False) -> tuple[bool, dict]:
     if set(data.keys()) - set(keys):
         return False, {"error": "Invalid fields to create/update"}
     return True, data
+
+
+def check_author_data(data: dict) -> tuple[bool, dict]:
+    keys = ('name',)
+    if set(data.keys()) - set(keys):
+        return False, {"error": "Invalid fields to update author"}
+    return True, data

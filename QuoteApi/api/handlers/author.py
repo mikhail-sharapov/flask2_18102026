@@ -2,6 +2,8 @@ from api import app, db
 from flask import request, abort, jsonify
 from api.models.author import AuthorModel
 from api.models.quote import QuoteModel
+from sqlalchemy.exc import SQLAlchemyError, InvalidRequestError
+from . import check_author_data
 
 
 @app.post("/authors")
@@ -32,7 +34,39 @@ def get_author_by_id(author_id: int):
     return jsonify(author.to_dict()), 200
 
 
-# URL: "/authors/<int:author_id>/quotes"
+@app.put("/authors/<int:author_id>")
+def edit_author(author_id):
+    data = request.json
+
+    result = check_author_data(data)
+    if not result[0]:
+        abort(400, result[1].get("error"))
+
+    author = db.get_or_404(AuthorModel, author_id, description=f"Author with id={author_id} not found")
+
+    try:
+        for key, value in data.items():
+            setattr(author, key, value)
+
+        db.session.commit()
+        return jsonify(author.to_dict()), 200
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        abort(503, f"Database error: {str(e)}")
+
+
+@app.delete("/authors/<int:author_id>")
+def delete_author(author_id):
+    author = db.get_or_404(AuthorModel, author_id, description=f"Author with id={author_id} not found")
+    db.session.delete(author)
+    try:
+        db.session.commit()
+        return jsonify({"message": f"Author with id {author_id} has deleted."}), 200
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        abort(503, f"Database error: {str(e)}")
+
+
 @app.route("/authors/<int:author_id>/quotes", methods=["GET", "POST"])
 def author_quotes(author_id: int):
     author = db.get_or_404(AuthorModel, author_id, description=f"Author with id={author_id} not found")
