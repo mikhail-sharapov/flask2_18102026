@@ -10,6 +10,7 @@ class Base(DeclarativeBase):
 
 app = Flask(__name__)
 app.json.ensure_ascii = False
+app.config.from_object("config.DevConfig")
 
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
