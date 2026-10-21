@@ -1,4 +1,4 @@
-# Flask1_04052025
+# QuoteAPI
 
 ## Инструкция по развертыванию проекта
 1. Создать виртуальное окружение
@@ -11,32 +11,18 @@ source flask_venv/bin/activate
 ```
 3. Установить нужные библиотеки
 ```
-python -m pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 4. Применить миграции
 ```
 flask db upgrade
 ```
-5. Запустить приложение
+5. Создаем файл '.flaskenv'
 ```
-python app.py
+FLASK_APP = run.py
+FLASK_DEBUG = 1
 ```
-
-## Работа с sqlite3
-
-1. Установка **CLI** для **sqlite**: 
+6. Запустить приложение
 ```
-sudo apt install sqlite3
-```
-2. Создать дамп БД (схема + данные): 
-```
-sqlite3 store.db .dump > db_sql/db_data.sql
-```
-3. Создать дамп БД (только схема): 
-```
-sqlite3 store.db ".schema quotes" > db_sql/db_schema.sql
-```
-4. Загрузить данные в БД: 
-```
-sqlite3 new_store.db ".read db_sql/db_data.sql"
+flask run
 ```

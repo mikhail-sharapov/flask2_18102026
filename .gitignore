@@ -5,7 +5,7 @@
 .idea/
 __pycache__/
 .py[cod]
-db.*
+.db
 *.sqlite
 *.sqlite3
 *.tmp
