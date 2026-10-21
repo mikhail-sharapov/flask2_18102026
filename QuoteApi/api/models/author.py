@@ -9,7 +9,7 @@ class AuthorModel(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(32), index=True)#, unique=True)
     surname: Mapped[str] = mapped_column(String(32), index=True, server_default="")
-    quotes: Mapped[list['QuoteModel']] = relationship(back_populates='author', lazy='dynamic') # type: ignore
+    quotes: Mapped[list['QuoteModel']] = relationship(back_populates='author', lazy='dynamic', cascade='all, delete-orphan') # type: ignore
 
     def __init__(self, name, surname):
         self.name = name
