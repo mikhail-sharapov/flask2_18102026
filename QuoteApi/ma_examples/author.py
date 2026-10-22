@@ -5,4 +5,4 @@ class Author:
        self.email = email
 
    def __repr__(self):
-       return f"Author({self.id}, {self.name}, {self.email}"
+       return f"Author({self.id}, {self.name}, {self.email})"
