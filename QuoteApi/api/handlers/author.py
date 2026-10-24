@@ -1,3 +1,4 @@
+from marshmallow import ValidationError
 from api import app, db
 from flask import request, abort, jsonify
 from api.models.author import AuthorModel
@@ -9,17 +10,19 @@ from api.schemas.author import author_schema, authors_schema
 
 @app.post("/authors")
 def create_author():
-    author_data = request.json
-    # add_to_db(AuthorModel, author_data)  # Variant 2
     try:
-        author = AuthorModel(**author_data)
+        # author_data = author_schema.loads(request.data)
+        # author = AuthorModel(**author_data)
+
+        # при установке параметра load_instance=True сразу получаем экземпляр класса-модели
+        author = author_schema.loads(request.data)
         db.session.add(author)
         db.session.commit()
-    except TypeError:
-        abort(400, f"Invalid data. Required: <name>. Received: {', '.join(author_data.keys())}")
+    except ValidationError as ve:
+        abort(400, f"Validation error: {str(ve)}")
     except Exception as e:
         abort(503, f"Database error: {str(e)}")
-    return jsonify(author.to_dict()), 201
+    return jsonify(author_schema.dump(author)), 201
 
 
 @app.get("/authors")
@@ -33,7 +36,8 @@ def get_authors():
 @app.get("/authors/<int:author_id>")
 def get_author_by_id(author_id: int):
     author = db.get_or_404(AuthorModel, author_id, description=f"Author with id={author_id} not found")
-    return jsonify(author.to_dict()), 200
+    # return jsonify(author.to_dict()), 200
+    return jsonify(author_schema.dump(author)), 200
 
 
 @app.put("/authors/<int:author_id>")
