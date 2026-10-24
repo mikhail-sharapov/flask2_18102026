@@ -20,6 +20,7 @@ jinxed==2.1.0
 Mako==1.4.3
 MarkupSafe==3.0.4
 marshmallow==4.3.1
+marshmallow-sqlalchemy==1.6.0
 Pygments==2.21.0
 python-dotenv==1.2.4
 pyxdg==0.28

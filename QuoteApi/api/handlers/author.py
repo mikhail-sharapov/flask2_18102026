@@ -4,6 +4,7 @@ from api.models.author import AuthorModel
 from api.models.quote import QuoteModel
 from sqlalchemy.exc import SQLAlchemyError, InvalidRequestError
 from . import check_author_data
+from api.schemas.author import author_schema, authors_schema
 
 
 @app.post("/authors")
@@ -24,8 +25,9 @@ def create_author():
 @app.get("/authors")
 def get_authors():
     authors_db = db.session.scalars(db.select(AuthorModel)).all()
-    authors = [author.to_dict() for author in authors_db]
-    return jsonify(authors), 200
+    # authors = [author.to_dict() for author in authors_db]
+    # return jsonify(authors), 200
+    return jsonify(authors_schema.dump(authors_db)), 200
 
 
 @app.get("/authors/<int:author_id>")
