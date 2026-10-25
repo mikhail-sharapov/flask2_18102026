@@ -10,7 +10,7 @@ class QuoteModel(db.Model):
     author_id: Mapped[str] = mapped_column(ForeignKey('authors.id'))
     author: Mapped['AuthorModel'] = relationship(back_populates='quotes') # type: ignore
     text: Mapped[str] = mapped_column(String(255))
-    rating: Mapped[int] = mapped_column(server_default="1")
+    rating: Mapped[int] = mapped_column(server_default="1", default="1")
 
     def __init__(self, author, text, rating=1):
         self.author = author
@@ -19,10 +19,3 @@ class QuoteModel(db.Model):
 
     def __repr__(self):
         return f'Quote{self.id, self.author}'  
-    
-    def to_dict(self):
-        return {
-            "quote_id": self.id,
-            "text": self.text,
-            "rating": self.rating
-        }
