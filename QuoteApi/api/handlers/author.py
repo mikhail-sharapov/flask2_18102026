@@ -1,11 +1,11 @@
-from marshmallow import ValidationError
+from marshmallow import EXCLUDE, ValidationError
 from api import app, db
 from flask import request, abort, jsonify
 from api.models.author import AuthorModel
 from api.models.quote import QuoteModel
 from sqlalchemy.exc import SQLAlchemyError, InvalidRequestError
 from . import check_author_data
-from api.schemas.author import author_schema, authors_schema
+from api.schemas.author import author_schema, authors_schema, edit_author_schema
 
 
 @app.post("/authors")
@@ -42,20 +42,28 @@ def get_author_by_id(author_id: int):
 
 @app.put("/authors/<int:author_id>")
 def edit_author(author_id):
-    data = request.json
+    # data = request.json
 
-    result = check_author_data(data)
-    if not result[0]:
-        abort(400, result[1].get("error"))
+    # result = check_author_data(data)
+    # if not result[0]:
+    #     abort(400, result[1].get("error"))
+
+    try:
+        new_data = edit_author_schema.load(request.json, unknown=EXCLUDE)
+    except ValidationError as ve:
+        return abort(400, f"Validation error: {str(ve)}")
+    
+    if not new_data:
+        return abort(400, "No valid data to update")
 
     author = db.get_or_404(AuthorModel, author_id, description=f"Author with id={author_id} not found")
 
     try:
-        for key, value in data.items():
+        for key, value in new_data.items():
             setattr(author, key, value)
 
         db.session.commit()
-        return jsonify(author.to_dict()), 200
+        return jsonify(author_schema.dump(author)), 200
     except SQLAlchemyError as e:
         db.session.rollback()
         abort(503, f"Database error: {str(e)}")

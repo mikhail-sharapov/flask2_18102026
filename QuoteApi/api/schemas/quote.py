@@ -11,7 +11,6 @@ def rating_validate(value: int):
 class QuoteSchema(ma.SQLAlchemySchema):
    class Meta:
        model = QuoteModel
-    #    load_instance = True
 
    id = ma.auto_field()
    text = ma.auto_field()
