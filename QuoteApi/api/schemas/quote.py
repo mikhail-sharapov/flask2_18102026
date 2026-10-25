@@ -28,6 +28,4 @@ class QuoteSchema(ma.SQLAlchemySchema):
 quote_schema = QuoteSchema(exclude=["author_id"])
 quotes_schema = QuoteSchema(many=True, exclude=["author"])
 
-edit_quote_without_rating_schema = QuoteSchema(exclude=["rating"], partial=True)
-
 filter_quote_schema = QuoteSchema(partial=True, exclude=["author"])
