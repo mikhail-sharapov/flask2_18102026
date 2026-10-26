@@ -7,6 +7,7 @@ from api.schemas.author import author_schema, authors_schema, edit_author_schema
 
 
 @app.post("/authors")
+@auth.login_required
 def create_author():
     """Create new author"""
     try:
@@ -36,6 +37,7 @@ def get_author_by_id(author_id: int):
 
 
 @app.put("/authors/<int:author_id>")
+@auth.login_required
 def edit_author(author_id):
     """Edit author by id"""
     try:
@@ -60,6 +62,7 @@ def edit_author(author_id):
 
 
 @app.delete("/authors/<int:author_id>")
+@auth.login_required
 def delete_author(author_id):
     """Delete author by id"""
     author = db.get_or_404(AuthorModel, author_id, description=f"Author with id={author_id} not found")

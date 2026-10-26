@@ -30,6 +30,7 @@ def get_quotes_count() -> int:
 
 
 @app.put("/quotes/<int:quote_id>")
+@auth.login_required
 def edit_quote(quote_id: int):
     """Edit quote by id"""
     try:
@@ -54,6 +55,7 @@ def edit_quote(quote_id: int):
 
 
 @app.route("/quotes/<int:quote_id>", methods=['DELETE'])
+@auth.login_required
 def delete_quote(quote_id):
     """Delete quote by id """
     quote = db.get_or_404(entity=QuoteModel, ident=quote_id, description=f"Quote with id={quote_id} not found")
@@ -78,29 +80,31 @@ def filter_quotes():
     return jsonify(quotes_schema.dump(quotes)), 200
 
 
-@app.route("/authors/<int:author_id>/quotes", methods=["GET", "POST"])
+@app.get("/authors/<int:author_id>/quotes")
+def get_author_quotes(author_id: int):
+    """Get all quotes of author by id. Create new quote of author"""
+    author = db.get_or_404(AuthorModel, author_id, description=f"Author with id={author_id} not found")
+    return jsonify(quotes_schema.dump(author.quotes)), 200
+
+
+@app.post("/authors/<int:author_id>/quotes")
 @auth.login_required
-def author_quotes(author_id: int):
+def create_author_quote(author_id: int):
     """Get all quotes of author by id. Create new quote of author"""
     # print(f"user = {auth.current_user()}")
+    # print(request.headers.get("Authorization"))
 
     author = db.get_or_404(AuthorModel, author_id, description=f"Author with id={author_id} not found")
 
-    if request.method == "GET":      
-        return jsonify(quotes_schema.dump(author.quotes)), 200
+    try:
+        new_quote_data = quote_schema.loads(request.data)
+        new_quote = QuoteModel(author, **new_quote_data)
+        db.session.add(new_quote)
+        db.session.commit()
+    except ValidationError as ve:
+        abort(400, f"Validating error: {ve.messages_dict}")
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        abort(503, f"Database error: {str(e)}")
 
-    elif request.method == "POST":
-        try:
-            new_quote_data = quote_schema.loads(request.data)
-            new_quote = QuoteModel(author, **new_quote_data)
-            db.session.add(new_quote)
-            db.session.commit()
-        except ValidationError as ve:
-            abort(400, f"Validating error: {ve.messages_dict}")
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            abort(503, f"Database error: {str(e)}")
-
-        return jsonify(quote_schema.dump(new_quote)), 201
-    else:
-        abort(405)
+    return jsonify(quote_schema.dump(new_quote)), 201
