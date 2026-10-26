@@ -18,5 +18,5 @@ migrate = Migrate(app, db)
 ma = Marshmallow()
 ma.init_app(app)
 
-# TODO Обязательно добавить импорт для обработчиков author и quote
-from api.handlers import author, quote
+# TODO Обязательно добавить импорт для обработчиков
+from api.handlers import author, quote, user
