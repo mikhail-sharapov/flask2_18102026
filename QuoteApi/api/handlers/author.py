@@ -1,11 +1,9 @@
 from marshmallow import EXCLUDE, ValidationError
-from api import app, db
+from api import app, db, auth
 from flask import request, abort, jsonify
 from api.models.author import AuthorModel
-from api.models.quote import QuoteModel
 from sqlalchemy.exc import SQLAlchemyError
 from api.schemas.author import author_schema, authors_schema, edit_author_schema
-from api.schemas.quote import quote_schema, quotes_schema
 
 
 @app.post("/authors")
@@ -73,27 +71,3 @@ def delete_author(author_id):
         db.session.rollback()
         abort(503, f"Database error: {str(e)}")
 
-
-@app.route("/authors/<int:author_id>/quotes", methods=["GET", "POST"])
-def author_quotes(author_id: int):
-    """Get all quotes of author by id. Create new quote of author"""
-    author = db.get_or_404(AuthorModel, author_id, description=f"Author with id={author_id} not found")
-
-    if request.method == "GET":      
-        return jsonify(quotes_schema.dump(author.quotes)), 200
-
-    elif request.method == "POST":
-        try:
-            new_quote_data = quote_schema.loads(request.data)
-            new_quote = QuoteModel(author, **new_quote_data)
-            db.session.add(new_quote)
-            db.session.commit()
-        except ValidationError as ve:
-            abort(400, f"Validating error: {ve.messages_dict}")
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            abort(503, f"Database error: {str(e)}")
-
-        return jsonify(quote_schema.dump(new_quote)), 201
-    else:
-        abort(405)

@@ -1,10 +1,11 @@
-from api import app, db
+from api import app, db, auth
 from flask import jsonify, request, abort
 from api.models.quote import QuoteModel
 from sqlalchemy import func
 from sqlalchemy.exc import SQLAlchemyError
 from api.schemas.quote import quote_schema, quotes_schema, filter_quote_schema
 from marshmallow import EXCLUDE, RAISE, ValidationError
+from api.models.author import AuthorModel
 
 
 @app.get("/quotes")
@@ -75,3 +76,31 @@ def filter_quotes():
         abort(400, f"Validation error: {str(ve)}")
     
     return jsonify(quotes_schema.dump(quotes)), 200
+
+
+@app.route("/authors/<int:author_id>/quotes", methods=["GET", "POST"])
+@auth.login_required
+def author_quotes(author_id: int):
+    """Get all quotes of author by id. Create new quote of author"""
+    # print(f"user = {auth.current_user()}")
+
+    author = db.get_or_404(AuthorModel, author_id, description=f"Author with id={author_id} not found")
+
+    if request.method == "GET":      
+        return jsonify(quotes_schema.dump(author.quotes)), 200
+
+    elif request.method == "POST":
+        try:
+            new_quote_data = quote_schema.loads(request.data)
+            new_quote = QuoteModel(author, **new_quote_data)
+            db.session.add(new_quote)
+            db.session.commit()
+        except ValidationError as ve:
+            abort(400, f"Validating error: {ve.messages_dict}")
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            abort(503, f"Database error: {str(e)}")
+
+        return jsonify(quote_schema.dump(new_quote)), 201
+    else:
+        abort(405)
