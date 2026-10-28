@@ -4,6 +4,9 @@ import sqlalchemy.orm as so
 from api import db
 import sqlalchemy as sa
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
+from itsdangerous import URLSafeSerializer, BadSignature
+from config import Config
+
 
 class UserModel(db.Model):
     __tablename__ = "users"
@@ -40,3 +43,17 @@ class UserModel(db.Model):
         except SQLAlchemyError as e:
             db.session.rollback()
             abort(503, f"Database error: {str(e)}")
+
+    def generate_auth_token(self):
+        s = URLSafeSerializer(Config.SECRET_KEY)
+        return s.dumps({'id': self.id})
+
+    @staticmethod
+    def verify_auth_token(token):
+        s = URLSafeSerializer(Config.SECRET_KEY)
+        try:
+            data = s.loads(token)
+        except BadSignature:
+            return None  # invalid token
+        user = db.one_or_404(UserModel, data['id'])
+        return user
