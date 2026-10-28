@@ -4,8 +4,10 @@ import sqlalchemy.orm as so
 from api import db
 import sqlalchemy as sa
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
-from itsdangerous import URLSafeSerializer, BadSignature
+# from itsdangerous import URLSafeSerializer, BadSignature
 from config import Config
+import jwt
+from time import time
 
 
 class UserModel(db.Model):
@@ -45,15 +47,15 @@ class UserModel(db.Model):
             abort(503, f"Database error: {str(e)}")
 
     def generate_auth_token(self):
-        s = URLSafeSerializer(Config.SECRET_KEY)
-        return s.dumps({'id': self.id})
+        token = jwt.encode({"id": self.id, "exp": int(time()+300)}, key=Config.SECRET_KEY, algorithm="HS256")
+        return token
 
     @staticmethod
     def verify_auth_token(token):
-        s = URLSafeSerializer(Config.SECRET_KEY)
         try:
-            data = s.loads(token)
-        except BadSignature:
+            data = jwt.decode(token, key=Config.SECRET_KEY, algorithms=["HS256"])
+        except Exception as e:
+            print(e)
             return None  # invalid token
         user = db.get_or_404(UserModel, data['id'])
         return user
