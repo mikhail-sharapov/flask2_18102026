@@ -49,3 +49,15 @@ sqlite3 quotes.db ".schema quotes" > db_sql/db_schema.sql
 ```
 sqlite3 new_store.db ".read db_sql/db_data.sql"
 ```
+
+## Дополнительно
+1. Поддержка шаблонов `Jinja2` -> дополнение `Better Jinja`    
+Добавить в `settings.json`
+```
+"files.associations": {
+  "*.html": "jinja-html"
+},
+"emmet.includeLanguages": {
+  "jinja-html": "html"
+}
+```
