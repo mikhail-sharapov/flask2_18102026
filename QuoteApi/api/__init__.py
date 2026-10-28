@@ -37,7 +37,6 @@ def verify_password(username, password):
 def verify_token(token):
    from api.models.user import UserModel
    user = UserModel.verify_auth_token(token)
-   print(f"{user=}")
    return user
 
 
