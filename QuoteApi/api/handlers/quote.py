@@ -1,4 +1,4 @@
-from api import app, db, auth
+from api import app, db, multi_auth
 from flask import jsonify, request, abort
 from api.models.quote import QuoteModel
 from sqlalchemy import func
@@ -30,7 +30,7 @@ def get_quotes_count() -> int:
 
 
 @app.put("/quotes/<int:quote_id>")
-@auth.login_required
+@multi_auth.login_required
 def edit_quote(quote_id: int):
     """Edit quote by id"""
     try:
@@ -55,7 +55,7 @@ def edit_quote(quote_id: int):
 
 
 @app.route("/quotes/<int:quote_id>", methods=['DELETE'])
-@auth.login_required
+@multi_auth.login_required
 def delete_quote(quote_id):
     """Delete quote by id """
     quote = db.get_or_404(entity=QuoteModel, ident=quote_id, description=f"Quote with id={quote_id} not found")
@@ -88,7 +88,7 @@ def get_author_quotes(author_id: int):
 
 
 @app.post("/authors/<int:author_id>/quotes")
-@auth.login_required
+@multi_auth.login_required
 def create_author_quote(author_id: int):
     """Get all quotes of author by id. Create new quote of author"""
     # print(f"user = {auth.current_user()}")
