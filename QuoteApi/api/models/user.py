@@ -8,6 +8,8 @@ from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from config import Config
 import jwt
 from time import time
+from api.models import users_roles
+
 
 
 class UserModel(db.Model):
@@ -16,6 +18,7 @@ class UserModel(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     username: so.Mapped[str] = so.mapped_column(sa.String(32), index=True, unique=True)
     password_hash: so.Mapped[str] = so.mapped_column(sa.String(128))
+    roles: so.Mapped[list['RoleModel']] = so.relationship(secondary=users_roles, back_populates='users') # type: ignore
 
     def __init__(self, username, password):
         self.username = username

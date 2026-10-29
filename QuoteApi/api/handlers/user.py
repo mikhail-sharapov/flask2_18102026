@@ -1,7 +1,9 @@
+from sqlalchemy.exc import IntegrityError
 from flask import abort, jsonify, request
 from marshmallow import ValidationError
 from api import app, db
 from api.models.user import UserModel
+from api.models.role import RoleModel
 from api.schemas.user import user_schema, users_schema
 
 
@@ -29,3 +31,17 @@ def create_user():
 
     user.save()
     return jsonify(user_schema.dump(user)), 201
+
+
+@app.post("/users/<int:user_id>/roles/<int:role_id>")
+def add_role_to_user(user_id, role_id):
+    user = db.get_or_404(UserModel, user_id, description=f"User with id={user_id} not found")
+    role = db.get_or_404(RoleModel, role_id, description=f"Role with id={role_id} not found")
+    try:
+        user.roles.append(role)
+        db.session.add(user)
+        db.session.commit()
+    except IntegrityError as ie:
+        return jsonify(error=str(ie))
+    return jsonify(done="Role added"), 200
+

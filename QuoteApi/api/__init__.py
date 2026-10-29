@@ -41,4 +41,4 @@ def verify_token(token):
 
 
 # DONE. Обязательно добавить импорт для обработчиков
-from api.handlers import author, quote, user, token
+from api.handlers import author, quote, user, token, role
