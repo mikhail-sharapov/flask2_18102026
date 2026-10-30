@@ -1,14 +1,15 @@
 from flask import request
 from api import ma
 from api.models.user import UserModel
-from marshmallow import validate, fields, post_load
+from marshmallow import EXCLUDE, validate, fields, post_load
 
 
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = UserModel
         exclude = ("password_hash",)
-        dump_only = ("id",)        
+        dump_only = ("id",) 
+        unknown = EXCLUDE       
 
     username = ma.auto_field(required=True, validate=validate.Length(min=4))
     password = fields.String(required=True, validate=validate.Length(min=5, max=15))

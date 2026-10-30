@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration</title>
+</head>
+<body>
+    <h1>Pleas, register</h1>
+    <div>
+        <form action="" method="post">
+            {{ form.csrf_token }}
+            {{ form.username.label }}
+            {{ form.username }}
+            <br>
+            {{ form.password.label }}
+            {{ form.password }}
+            <br>
+            {{ form.repeat_password.label }}
+            {{ form.repeat_password }}
+            <br>
+            <input type="submit">
+        </form>
+    </div>
+</body>
+</html>

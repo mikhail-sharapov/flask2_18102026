@@ -27,7 +27,7 @@ multi_auth = MultiAuth(basic_auth, token_auth)
 @basic_auth.verify_password
 def verify_password(username, password):
    from api.models.user import UserModel
-   user = db.one_or_404(db.select(UserModel).filter_by(username=username))
+   user = db.one_or_404(db.select(UserModel).filter_by(username=username), description="User not found")
    if not user or not user.verify_password(password):
        return False
    g.user = user
@@ -49,4 +49,4 @@ def get_user_roles(user):
 
 
 # DONE. Обязательно добавить импорт для обработчиков
-from api.handlers import author, quote, user, token, role
+from api.handlers import author, quote, user, token, role, index
