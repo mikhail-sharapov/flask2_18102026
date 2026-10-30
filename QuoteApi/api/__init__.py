@@ -5,6 +5,7 @@ from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
 
+
 class Base(DeclarativeBase):
     pass
 
@@ -30,14 +31,21 @@ def verify_password(username, password):
    if not user or not user.verify_password(password):
        return False
    g.user = user
-   return True
+   return user
 
 
 @token_auth.verify_token
 def verify_token(token):
    from api.models.user import UserModel
    user = UserModel.verify_auth_token(token)
+   g.user = user
    return user
+
+
+@basic_auth.get_user_roles
+@token_auth.get_user_roles
+def get_user_roles(user):
+    return [role.name for role in user.roles]
 
 
 # DONE. Обязательно добавить импорт для обработчиков

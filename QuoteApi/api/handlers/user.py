@@ -35,6 +35,7 @@ def create_user():
 
 @app.post("/users/<int:user_id>/roles/<int:role_id>")
 def add_role_to_user(user_id, role_id):
+    """TODO. Edit for get json data with roles to add its to user by id"""
     user = db.get_or_404(UserModel, user_id, description=f"User with id={user_id} not found")
     role = db.get_or_404(RoleModel, role_id, description=f"Role with id={role_id} not found")
     try:
@@ -43,5 +44,5 @@ def add_role_to_user(user_id, role_id):
         db.session.commit()
     except IntegrityError as ie:
         return jsonify(error=str(ie))
-    return jsonify(done="Role added"), 200
+    return jsonify(result=f"Role '{role.name}' added to user '{user.username}'"), 201
 

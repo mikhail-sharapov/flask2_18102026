@@ -7,7 +7,7 @@ from api.schemas.author import author_schema, authors_schema, edit_author_schema
 
 
 @app.post("/authors")
-@multi_auth.login_required
+@multi_auth.login_required(role="admin")
 def create_author():
     """Create new author"""
     try:
