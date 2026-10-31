@@ -23,7 +23,7 @@ def user_registration():
         except ValidationError as e:
             abort(400, f"Validation error: {str(e)}")
 
-        user.save()   
+        user.save()
 
         return redirect(url_for("registration_success"))
 
@@ -47,6 +47,8 @@ def user_login():
         user = verify_password(form.username.data, form.password.data)
         if user:
             return redirect(url_for("login_success"))
+        else:
+            form.username.errors += ("User identification error",)
 
     context = {"form": form}
 

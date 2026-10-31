@@ -10,17 +10,32 @@
     <div>
         <form action="" method="post">
             {{ form.csrf_token }}
-            {{ form.username.label }}
-            {{ form.username }}
+            <div>
+                {{ form.username.label(style="display: inline-block; width: 120px;") }}
+                {{ form.username }}
+            </div>
             <br>
-            {{ form.password.label }}
-            {{ form.password }}
+            <div>
+                {{ form.password.label(style="display: inline-block; width: 120px;") }}
+                {{ form.password }}
+            </div>
             <br>
-            {{ form.repeat_password.label }}
-            {{ form.repeat_password }}
+            <div>
+                {{ form.repeat_password.label(style="display: inline-block; width: 120px;") }}
+                {{ form.repeat_password }}
+            </div>
             <br>
-            <input type="submit">
+            <input type="submit" value="Register">
         </form>
+    </div>
+    <div>
+        {% if form.repeat_password.errors %}
+        <ul class="errors">
+            {% for error in form.repeat_password.errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
     </div>
 </body>
 </html>
