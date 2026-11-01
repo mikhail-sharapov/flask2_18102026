@@ -61,3 +61,18 @@ sqlite3 new_store.db ".read db_sql/db_data.sql"
   "jinja-html": "html"
 }
 ```
+
+## Работа с Open API v3
+1. Основной URL `/doc`
+2. Посмотреть спецификацию в терминале
+```
+flask spec
+```
+3. Сгенерировать в формате `json`
+```
+flask spec --output openapi.json
+```
+4. Сгенерировать в формате `yaml`
+```
+flask spec --format yaml --output openapi.yaml
+```
