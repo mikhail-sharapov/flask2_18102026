@@ -4,54 +4,29 @@ from marshmallow import ValidationError
 from api import app, db
 from api.models.user import UserModel
 from api.models.role import RoleModel
-from api.schemas.user import user_schema, users_schema
+from api.schemas.user import user_schema, users_schema, UserSchema
 
 
 @app.get("/users/<int:user_id>")
+@app.output(UserSchema)
+@app.doc(summary="Get user by id", description="Get user by id", tags=["users"])
 def get_user_by_id(user_id: int):
-    """
-    Get User by id
-    ---
-    tags:
-        - Users
-    parameters:
-         - in: path
-           name: user_id
-           type: integer
-           required: true
-           default: 1
-
-    responses:
-        200:
-            description: A single user item
-            schema:
-                id: User
-                properties:
-                    id:
-                        type: integer
-                    username:
-                        type: string
-                    is_staff:
-                        type: boolean
-    """
+    """Get iser by id"""
     user = db.get_or_404(UserModel, ident=user_id, description=f"User with id={user_id} not found")
-    response = make_response(user_schema.dump(user))
-    response.status_code = 200
-    response.headers["Custom-Header"] = "Gettin user by id"
-    return response
-    # return jsonify(user_schema.dump(user)), 200
+    # response = make_response(user)
+    # response.status_code = 200
+    # response.headers["Custom-Header"] = "Gettin user by id"
+    # return response
+    return user, 200
 
 
 @app.get("/users")
+@app.output(UserSchema(many=True))
+@app.doc(summary="Get all users", description="Get all users", tags=["users"])
 def get_users():
-    """
-    Get all Users
-    ---
-    tags:
-        - Users
-    """
+    """Get all users"""
     users = db.session.scalars(db.select(UserModel)).all()
-    return jsonify(users_schema.dump(users)), 200
+    return users, 200
 
 
 @app.post("/users")
