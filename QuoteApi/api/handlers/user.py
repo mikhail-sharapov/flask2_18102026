@@ -30,15 +30,18 @@ def get_users():
 
 
 @app.post("/users")
-def create_user():
+@app.input(UserSchema, arg_name="user")
+@app.output(UserSchema, status_code=201)
+@app.doc(summary="Create new user", description="Create new user", tags=["users"], responses=["400", "503"])
+def create_user(user):
     """Create user"""
-    try:
-        user = user_schema.loads(request.data)
-    except ValidationError as e:
-        abort(400, f"Validation error: {str(e)}")
-
+    # try:
+    #     user = user_schema.loads(request.data)
+    # except ValidationError as e:
+    #     abort(400, f"Validation error: {str(e)}")
     user.save()
-    return jsonify(user_schema.dump(user)), 201
+    # return jsonify(user_schema.dump(user)), 201
+    return user
 
 
 @app.post("/users/<int:user_id>/roles/<int:role_id>")
