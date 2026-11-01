@@ -4,6 +4,7 @@ from sqlalchemy.orm import DeclarativeBase
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
+from flasgger import Swagger
 
 
 class Base(DeclarativeBase):
@@ -22,6 +23,7 @@ ma.init_app(app)
 basic_auth = HTTPBasicAuth()
 token_auth = HTTPTokenAuth(scheme="Bearer")
 multi_auth = MultiAuth(basic_auth, token_auth)
+swagger = Swagger(app)
 
 
 @basic_auth.verify_password

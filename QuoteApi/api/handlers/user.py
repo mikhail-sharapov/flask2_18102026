@@ -1,5 +1,5 @@
 from sqlalchemy.exc import IntegrityError
-from flask import abort, jsonify, request
+from flask import abort, jsonify, request, Response, make_response
 from marshmallow import ValidationError
 from api import app, db
 from api.models.user import UserModel
@@ -9,14 +9,47 @@ from api.schemas.user import user_schema, users_schema
 
 @app.get("/users/<int:user_id>")
 def get_user_by_id(user_id: int):
-    """Get user by id"""
+    """
+    Get User by id
+    ---
+    tags:
+        - Users
+    parameters:
+         - in: path
+           name: user_id
+           type: integer
+           required: true
+           default: 1
+
+    responses:
+        200:
+            description: A single user item
+            schema:
+                id: User
+                properties:
+                    id:
+                        type: integer
+                    username:
+                        type: string
+                    is_staff:
+                        type: boolean
+    """
     user = db.get_or_404(UserModel, ident=user_id, description=f"User with id={user_id} not found")
-    return jsonify(user_schema.dump(user)), 200
+    response = make_response(user_schema.dump(user))
+    response.status_code = 200
+    response.headers["Custom-Header"] = "Gettin user by id"
+    return response
+    # return jsonify(user_schema.dump(user)), 200
 
 
 @app.get("/users")
 def get_users():
-    """Get all users"""
+    """
+    Get all Users
+    ---
+    tags:
+        - Users
+    """
     users = db.session.scalars(db.select(UserModel)).all()
     return jsonify(users_schema.dump(users)), 200
 
