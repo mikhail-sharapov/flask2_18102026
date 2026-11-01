@@ -45,7 +45,7 @@ def get_author_by_id(author_id: int):
 @app.put("/authors/<int:author_id>")
 # @multi_auth.login_required
 @app.auth_required(token_auth)
-@app.input(AuthorSchema(load_instance=False), arg_name="author_data")
+@app.input(AuthorSchema(load_instance=False, partial=True), arg_name="author_data")
 @app.output(AuthorSchema, status_code=201)
 @app.doc(summary="Edit author", description="Edit authors", tags=["authors"])
 def edit_author(author_id, author_data):
