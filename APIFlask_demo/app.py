@@ -1,4 +1,4 @@
-from apiflask import APIFlask, HTTPError
+from apiflask import APIFlask, EmptySchema, HTTPError
 from apiflask import Schema
 from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
@@ -50,3 +50,10 @@ def get_all_pets():
 def create_pet(pet):
     pet.update({"id": 101})
     return pet
+
+
+@app.delete("/pets/<int:pet_id>")
+@app.output(EmptySchema, status_code=204)
+@app.doc(summary="Detete pet by id", description="Detete pet by id", tags=["pets"])
+def delete_pet_by_id(pet_id):
+    return ""
