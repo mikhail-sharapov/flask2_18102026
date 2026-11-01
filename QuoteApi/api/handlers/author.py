@@ -1,5 +1,5 @@
 from marshmallow import EXCLUDE, ValidationError
-from api import app, db, token_auth, multi_auth
+from api import app, db, token_auth
 from flask import request, abort, jsonify
 from api.models.author import AuthorModel
 from sqlalchemy.exc import SQLAlchemyError
@@ -8,21 +8,12 @@ from api.schemas.author import author_schema, authors_schema, edit_author_schema
 
 @app.post("/authors")
 # @multi_auth.login_required(role="admin")
+@app.auth_required(token_auth)
 @app.input(AuthorSchema, arg_name="author")
 @app.output(AuthorSchema, status_code=201)
 @app.doc(summary="Create new author", description="Create new authors", tags=["authors"])
 def create_author(author):
     """Create new author"""
-    # try:
-    #     # при установке параметра load_instance=True сразу получаем экземпляр класса-модели
-    #     author = author_schema.loads(request.data)
-    #     db.session.add(author)
-    #     db.session.commit()
-    # except ValidationError as ve:
-    #     abort(400, f"Validation error: {str(ve)}")
-    # except Exception as e:
-    #     abort(503, f"Database error: {str(e)}")
-    # return jsonify(author_schema.dump(author)), 201
     try:
         db.session.add(author)
         db.session.commit()
@@ -53,6 +44,7 @@ def get_author_by_id(author_id: int):
 
 @app.put("/authors/<int:author_id>")
 # @multi_auth.login_required
+@app.auth_required(token_auth)
 @app.input(AuthorSchema(load_instance=False), arg_name="author_data")
 @app.output(AuthorSchema, status_code=201)
 @app.doc(summary="Edit author", description="Edit authors", tags=["authors"])
@@ -81,6 +73,7 @@ def edit_author(author_id, author_data):
 
 @app.delete("/authors/<int:author_id>")
 # @multi_auth.login_required
+@app.auth_required(token_auth)
 @app.output(AuthorSchema, status_code=204)
 @app.doc(summary="Delete author", description="Delete authors", tags=["authors"])
 def delete_author(author_id):

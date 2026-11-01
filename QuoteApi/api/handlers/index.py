@@ -1,5 +1,5 @@
 from marshmallow import ValidationError
-from api import app, verify_password, multi_auth
+from api import app, verify_password
 from api.forms.user import UserRegistrationForm, UserLogInForm
 from flask import abort, jsonify, render_template, redirect, url_for
 from api.schemas.user import user_schema

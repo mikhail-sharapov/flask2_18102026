@@ -3,8 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
-from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
-from apiflask import APIFlask
+# from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
+from apiflask import APIFlask, HTTPBasicAuth, HTTPTokenAuth
 
 
 class Base(DeclarativeBase):
@@ -23,7 +23,7 @@ ma = Marshmallow()
 ma.init_app(app)
 basic_auth = HTTPBasicAuth()
 token_auth = HTTPTokenAuth(scheme="Bearer")
-multi_auth = MultiAuth(basic_auth, token_auth)
+# multi_auth = MultiAuth(basic_auth, token_auth)
 
 
 @basic_auth.verify_password
