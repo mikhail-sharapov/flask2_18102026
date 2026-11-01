@@ -1,14 +1,19 @@
-from flask import Flask, g
+from flask import Flask, g, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
 # from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
 from apiflask import APIFlask, HTTPBasicAuth, HTTPTokenAuth
+from flask_babel import Babel
 
 
 class Base(DeclarativeBase):
     pass
+
+
+def get_locale():
+   return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
 app = APIFlask(__name__, title="Quote API", version="1.0")
@@ -24,6 +29,8 @@ ma.init_app(app)
 basic_auth = HTTPBasicAuth()
 token_auth = HTTPTokenAuth(scheme="Bearer")
 # multi_auth = MultiAuth(basic_auth, token_auth)
+babel = Babel()
+babel.init_app(app, default_locale="ru", locale_selector=get_locale)
 
 
 @basic_auth.verify_password

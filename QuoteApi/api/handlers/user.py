@@ -5,6 +5,7 @@ from api import app, db
 from api.models.user import UserModel
 from api.models.role import RoleModel
 from api.schemas.user import user_schema, users_schema, UserSchema
+from flask_babel import _
 
 
 @app.get("/users/<int:user_id>")
@@ -12,7 +13,8 @@ from api.schemas.user import user_schema, users_schema, UserSchema
 @app.doc(summary="Get user by id", description="Get user by id", tags=["users"])
 def get_user_by_id(user_id: int):
     """Get iser by id"""
-    user = db.get_or_404(UserModel, ident=user_id, description=f"User with id={user_id} not found")
+    """TODO. Исправить ошибку unsupported format character '{'"""
+    user = db.get_or_404(UserModel, ident=user_id, description=_("User with id=%{user_id}s not found", user_id=user_id))
     # response = make_response(user)
     # response.status_code = 200
     # response.headers["Custom-Header"] = "Gettin user by id"
@@ -32,7 +34,7 @@ def get_users():
 @app.post("/users")
 @app.input(UserSchema, arg_name="user", example={"username": "new_user", "password": "new_password"})
 @app.output(UserSchema, status_code=201)
-@app.doc(summary="Create new user", description="Create new user", tags=["users"], responses=[400, 503])
+@app.doc(summary="Create new user", description=_("Create new user and save to db"), tags=["users"], responses=[400, 503])
 def create_user(user):
     """Create user"""
     # try:

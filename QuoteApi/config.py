@@ -5,6 +5,7 @@ BASE_DIR = Path(__file__).parent
 class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = 'supeR secret KeyS'
+    LANGUAGES = ["en", "ru"]
 
 class DevConfig(Config):
     path_to_db = BASE_DIR / "quotes.db"
