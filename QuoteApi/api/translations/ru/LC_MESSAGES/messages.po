@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-01 16:36+0300\n"
-"PO-Revision-Date: 2026-11-01 16:37+0300\n"
+"POT-Creation-Date: 2026-11-03 11:46+0300\n"
+"PO-Revision-Date: 2026-11-03 11:47+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
 "Language-Team: ru <LL@li.org>\n"
@@ -19,12 +19,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: api/handlers/user.py:16
-#, python-brace-format
-msgid "User with id=%{user_id}s not found"
-msgstr "Пользователь с id=%{user_id} не найден"
+#: api/handlers/user.py:17
+#, python-format
+msgid "User with id=%(user_id)s not found"
+msgstr "Пользователь с id=%(user_id)s не найден"
 
-#: api/handlers/user.py:36
+#: api/handlers/user.py:37
 msgid "Create new user and save to db"
 msgstr "Создать нового пользователя и сохранить в БД"
 

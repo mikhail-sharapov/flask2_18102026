@@ -14,7 +14,7 @@ from flask_babel import _
 def get_user_by_id(user_id: int):
     """Get iser by id"""
     """TODO. Исправить ошибку unsupported format character '{'"""
-    user = db.get_or_404(UserModel, ident=user_id, description=_("User with id=%{user_id}s not found", user_id=user_id))
+    user = db.get_or_404(UserModel, ident=user_id, description=_("User with id=%(user_id)s not found", user_id=user_id))
     # response = make_response(user)
     # response.status_code = 200
     # response.headers["Custom-Header"] = "Gettin user by id"

@@ -1,7 +1,7 @@
 from marshmallow import ValidationError
 from api import app, verify_password
 from api.forms.user import UserRegistrationForm, UserLogInForm
-from flask import abort, jsonify, render_template, redirect, url_for
+from flask import abort, jsonify, render_template, redirect, url_for, session
 from api.schemas.user import user_schema
 
 
@@ -13,8 +13,7 @@ def index():
 
 @app.route("/register", methods=["GET", "POST"])
 def user_registration():
-    """User registration page
-    TODO. Check repeat_password validation"""
+    """User registration page"""
     form = UserRegistrationForm()
 
     if form.validate_on_submit():
@@ -46,6 +45,7 @@ def user_login():
     if form.validate_on_submit():
         user = verify_password(form.username.data, form.password.data)
         if user:
+            session["username"] = user.username
             return redirect(url_for("login_success"))
         else:
             form.username.errors += ("User identification error",)
@@ -58,4 +58,4 @@ def user_login():
 @app.route("/login_success")
 def login_success():
     """Success user login page"""
-    return jsonify(message=f"Wellcome!")
+    return jsonify(message=f"Wellcome, {session.get("username")}!")
