@@ -9,26 +9,21 @@ from flask_babel import _
 
 
 @app.get("/users/<int:user_id>")
-@app.output(UserSchema)
-@app.doc(summary="Get user by id", description="Get user by id", tags=["users"])
+@app.output(UserSchema, status_code=200)
+@app.doc(summary="Get user by id", description="Get user by id", tags=["users"], responses=[200])
 def get_user_by_id(user_id: int):
     """Get iser by id"""
-    """TODO. Исправить ошибку unsupported format character '{'"""
     user = db.get_or_404(UserModel, ident=user_id, description=_("User with id=%(user_id)s not found", user_id=user_id))
-    # response = make_response(user)
-    # response.status_code = 200
-    # response.headers["Custom-Header"] = "Gettin user by id"
-    # return response
-    return user, 200
+    return user
 
 
 @app.get("/users")
-@app.output(UserSchema(many=True))
+@app.output(UserSchema(many=True), status_code=200)
 @app.doc(summary="Get all users", description="Get all users", tags=["users"])
 def get_users():
     """Get all users"""
     users = db.session.scalars(db.select(UserModel)).all()
-    return users, 200
+    return users
 
 
 @app.post("/users")
@@ -37,16 +32,12 @@ def get_users():
 @app.doc(summary="Create new user", description=_("Create new user and save to db"), tags=["users"], responses=[400, 503])
 def create_user(user):
     """Create user"""
-    # try:
-    #     user = user_schema.loads(request.data)
-    # except ValidationError as e:
-    #     abort(400, f"Validation error: {str(e)}")
     user.save()
-    # return jsonify(user_schema.dump(user)), 201
     return user
 
 
 @app.post("/users/<int:user_id>/roles/<int:role_id>")
+@app.doc(summary="Add role to user", description="Add role to user", tags=["users"], responses=[201,404])
 def add_role_to_user(user_id, role_id):
     """Add role to user"""
     user = db.get_or_404(UserModel, user_id, description=f"User with id={user_id} not found")

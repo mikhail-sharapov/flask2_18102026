@@ -5,7 +5,6 @@ from api.schemas.author import AuthorSchema
 from marshmallow.validate import Length
 
 
-
 def rating_validate(value: int):
     """Функция-пример ручной валидации"""
     if value not in range(1, 6):
