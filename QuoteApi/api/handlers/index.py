@@ -6,12 +6,14 @@ from api.schemas.user import user_schema
 
 
 @app.route("/")
+@app.doc(summary="Main page", description="Main page", tags=["pages"])
 def index():
     """Main page"""
     return render_template("index.html")
 
 
 @app.route("/register", methods=["GET", "POST"])
+@app.doc(summary="User registration page", description="User registration page", tags=["pages"])
 def user_registration():
     """User registration page"""
     form = UserRegistrationForm()
@@ -32,14 +34,16 @@ def user_registration():
 
 
 @app.route("/registration_success")
+@app.doc(summary="Success user registration page", description="Success user registration page", tags=["pages"])
 def registration_success():
     """Success user registration page"""
     return jsonify(message="Registration successfull")
 
 
 @app.route("/login", methods=["GET", "POST"])
+@app.doc(summary="Login user page", description="Login user page", tags=["pages"])
 def user_login():
-    """LogIn user"""
+    """Login user page"""
     form = UserLogInForm()
 
     if form.validate_on_submit():
@@ -56,6 +60,7 @@ def user_login():
 
 
 @app.route("/login_success")
+@app.doc(summary="Success user login page", description="Success user login page", tags=["pages"])
 def login_success():
     """Success user login page"""
     return jsonify(message=f"Wellcome, {session.get("username")}!")
