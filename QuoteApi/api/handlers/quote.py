@@ -37,7 +37,7 @@ def get_quotes_count() -> int:
 
 
 @app.put("/quotes/<int:quote_id>")
-# @multi_auth.login_required
+@app.auth_required(token_auth, ["admin", "user"])
 @app.input(QuoteSchema(load_instance=False, partial=True), arg_name="quote_data")
 @app.output(QuoteSchema, status_code=201)
 @app.doc(summary="Edit quote by id", description="Edit quote by id", tags=["quotes"], responses=[201,404,503])
@@ -57,7 +57,7 @@ def edit_quote(quote_id: int, quote_data):
 
 
 @app.delete("/quotes/<int:quote_id>")
-# @multi_auth.login_required
+@app.auth_required(token_auth, ["admin", "user"])
 @app.output(schema={"message": String()}, status_code=200)
 @app.doc(summary="Delete quote by id", description="Delete quote by id", tags=["quotes"], responses=[200,404,503])
 def delete_quote(quote_id):
@@ -92,7 +92,7 @@ def get_author_quotes(author_id: int):
 
 
 @app.post("/authors/<int:author_id>/quotes")
-# @multi_auth.login_required
+@app.auth_required(token_auth, ["admin", "user"])
 @app.input(QuoteSchema(exclude=["author", "author_id"], partial=True, load_instance=False), arg_name="quote_data")
 @app.output(QuoteSchema, status_code=201)
 @app.doc(summary="Create new quote of author by id", description="Create new quote of author by id", tags=["quotes"],

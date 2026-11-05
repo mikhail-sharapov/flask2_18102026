@@ -8,7 +8,7 @@ from apiflask.fields import String
 
 
 @app.post("/authors")
-@app.auth_required(token_auth)
+@app.auth_required(token_auth, ["admin"])
 @app.input(AuthorSchema, arg_name="author")
 @app.output(AuthorSchema, status_code=201)
 @app.doc(summary="Create new author", description="Create new authors", tags=["authors"], responses=[201,503])
@@ -41,7 +41,7 @@ def get_author_by_id(author_id: int):
 
 
 @app.put("/authors/<int:author_id>")
-@app.auth_required(token_auth)
+@app.auth_required(token_auth, ["admin"])
 @app.input(AuthorSchema(load_instance=False, partial=True), arg_name="author_data")
 @app.output(AuthorSchema, status_code=201)
 @app.doc(summary="Edit author", description="Edit authors", tags=["authors"], responses=[201,404,503])
@@ -61,7 +61,7 @@ def edit_author(author_id, author_data):
 
 
 @app.delete("/authors/<int:author_id>")
-# @app.auth_required(token_auth)
+@app.auth_required(token_auth, ["admin"])
 @app.output(schema={"message": String()}, status_code=200)
 @app.doc(summary="Delete author", description="Delete authors", tags=["authors"], responses=[200,503])
 def delete_author(author_id):
