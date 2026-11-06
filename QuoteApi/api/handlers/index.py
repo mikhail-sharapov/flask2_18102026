@@ -1,7 +1,7 @@
 from marshmallow import ValidationError
 from api import app, verify_password
 from api.forms.user import UserRegistrationForm, UserLogInForm
-from flask import abort, jsonify, render_template, redirect, url_for, session
+from flask import abort, jsonify, render_template, redirect, url_for, session, request
 from api.schemas.user import user_schema
 from flask_babel import _
 
@@ -23,7 +23,6 @@ def user_registration():
         try:
             user = user_schema.load(form.data)
         except ValidationError as e:
-            # abort(400, f"Validation error: {str(e)}")
             abort(400, _("Validation error: %(error)s", error=str(e)))
 
         user.save()
@@ -64,6 +63,5 @@ def user_login():
 @app.route("/login_success")
 @app.doc(summary="Success user login page", description="Success user login page", tags=["pages"])
 def login_success():
-    """Success user login page"""
-    # return jsonify(message=f"Wellcome, {session.get("username")}!")
+    """Success user login page"""  
     return jsonify(message=_("Wellcome, %(username)s!", username=session.get("username")))

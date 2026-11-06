@@ -75,12 +75,20 @@ def delete_quote(quote_id):
     
     
 @app.get("/quotes/filter")
-@app.input(QuoteSchema(exclude=["author"], partial=True), location="query", arg_name="filter_data")
+@app.input(schema={"keyword": String()}, location="query", arg_name="filter_data")
 @app.output(QuoteSchema(many=True), status_code=200)
-@app.doc(summary="Get quotes by filters", description="Get quotes by filters", tags=["quotes"], responses=[200])
+@app.doc(summary="Get quotes by filter", description="Get quotes by filter", tags=["quotes"], responses=[200])
 def filter_quotes(filter_data):
-    """Get quotes by filters"""
-    quotes = db.session.scalars(db.select(QuoteModel).filter_by(**filter_data)).all()
+    """Get quotes by filter"""
+    try:
+        keyword = filter_data["keyword"]
+    except KeyError as ke:
+        abort(400, f"Param is missing: {str(ke)}")
+
+    quotes = QuoteModel.query.join(QuoteModel.author).filter(
+        AuthorModel.name.like(f"%{keyword}%") |
+        AuthorModel.surname.like(f"%{keyword}%") |
+        QuoteModel.text.like(f"%{keyword}%")).all()
     return quotes
 
 

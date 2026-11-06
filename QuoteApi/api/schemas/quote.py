@@ -3,6 +3,8 @@ from api import ma
 from api.models.quote import QuoteModel
 from api.schemas.author import AuthorSchema
 from marshmallow.validate import Length
+from apiflask import Schema
+from apiflask.fields import String
 
 
 def rating_validate(value: int):
@@ -22,6 +24,10 @@ class QuoteSchema(ma.SQLAlchemySchema):
     author_id = ma.auto_field()
     author = ma.Nested(AuthorSchema(only=("name","surname")))
     rating = ma.auto_field(validate=rating_validate) #strict=True,
+
+
+class FilterQuoteSchema(Schema):
+    keyword = String()
 
 
 quote_schema = QuoteSchema(exclude=["author_id"])
