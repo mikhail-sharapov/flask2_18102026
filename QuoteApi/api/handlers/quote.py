@@ -7,6 +7,7 @@ from api.schemas.quote import quote_schema, quotes_schema, filter_quote_schema, 
 from marshmallow import EXCLUDE, RAISE, ValidationError
 from api.models.author import AuthorModel
 from apiflask.fields import String, Integer
+from flask_babel import _
 
 
 @app.get("/quotes")
@@ -23,7 +24,8 @@ def get_quotes():
 @app.doc(summary="Get quote by id", description="Get quote by id", tags=["quotes"], responses=[200, 404])
 def get_quote_by_id(quote_id: int):
     """Get quote by id"""
-    quote = db.get_or_404(entity=QuoteModel, ident=quote_id, description=f"Quote with id={quote_id} not found")
+    quote = db.get_or_404(entity=QuoteModel, ident=quote_id,
+                          description=_("Quote with id=%(quote_id)s not found", quote_id=quote_id))
     return quote
 
 
@@ -43,7 +45,7 @@ def get_quotes_count() -> int:
 @app.doc(summary="Edit quote by id", description="Edit quote by id", tags=["quotes"], responses=[201,404,503])
 def edit_quote(quote_id: int, quote_data):
     """Edit quote by id"""
-    quote = db.get_or_404(QuoteModel, quote_id, description=f"Quote with id={quote_id} not found")
+    quote = db.get_or_404(QuoteModel, quote_id, description=_("Quote with id=%(quote_id)s not found", quote_id=quote_id))
 
     try:
         for key, value in quote_data.items():
@@ -53,7 +55,7 @@ def edit_quote(quote_id: int, quote_data):
         return quote
     except SQLAlchemyError as e:
         db.session.rollback()
-        abort(503, f"Database error: {str(e)}")
+        abort(503, _("Database error: %(error)s", error=str(e)))
 
 
 @app.delete("/quotes/<int:quote_id>")
@@ -62,14 +64,14 @@ def edit_quote(quote_id: int, quote_data):
 @app.doc(summary="Delete quote by id", description="Delete quote by id", tags=["quotes"], responses=[200,404,503])
 def delete_quote(quote_id):
     """Delete quote by id"""
-    quote = db.get_or_404(entity=QuoteModel, ident=quote_id, description=f"Quote with id={quote_id} not found")
+    quote = db.get_or_404(entity=QuoteModel, ident=quote_id, description=_("Quote with id=%(quote_id)s not found", quote_id=quote_id))
     db.session.delete(quote)
     try:
         db.session.commit()
-        return {"message": f"Quote with id {quote_id} has deleted."}
+        return {"message": _("Quote with id %(quote_id)s has deleted.", quote_id=quote_id)}
     except SQLAlchemyError as e:
         db.session.rollback()
-        abort(503, f"Database error: {str(e)}")
+        abort(503, _("Database error: %(error)s", error=str(e)))
     
     
 @app.get("/quotes/filter")
@@ -87,7 +89,7 @@ def filter_quotes(filter_data):
 @app.doc(summary="Get all quotes of author by id", description="Get all quotes of author by id", tags=["quotes"], responses=[200])
 def get_author_quotes(author_id: int):
     """Get all quotes of author by id"""
-    author = db.get_or_404(AuthorModel, author_id, description=f"Author with id={author_id} not found")
+    author = db.get_or_404(AuthorModel, author_id, description=_("Author with id=%(author_id)s not found", author_id=author_id))
     return author.quotes
 
 
@@ -99,16 +101,16 @@ def get_author_quotes(author_id: int):
          responses=[201,404,422,500,503])
 def create_author_quote(author_id: int, quote_data):
     """Create new quote of author by id"""
-    author = db.get_or_404(AuthorModel, author_id, description=f"Author with id={author_id} not found")
+    author = db.get_or_404(AuthorModel, author_id, description=_("Author with id=%(author_id)s not found", author_id=author_id))
 
     try:
         new_quote = QuoteModel(author, **quote_data)
         db.session.add(new_quote)
         db.session.commit()
     except TypeError as te:
-        abort(500, f"Validating error: {str(te)}")        
+        abort(500, _("Validation error: %(error)s", error=str(te)))        
     except SQLAlchemyError as e:
         db.session.rollback()
-        abort(503, f"Database error: {str(e)}")
+        abort(503, _("Database error: %(error)s", error=str(e)))
 
     return new_quote

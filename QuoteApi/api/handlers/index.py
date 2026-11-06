@@ -3,6 +3,7 @@ from api import app, verify_password
 from api.forms.user import UserRegistrationForm, UserLogInForm
 from flask import abort, jsonify, render_template, redirect, url_for, session
 from api.schemas.user import user_schema
+from flask_babel import _
 
 
 @app.route("/")
@@ -22,7 +23,8 @@ def user_registration():
         try:
             user = user_schema.load(form.data)
         except ValidationError as e:
-            abort(400, f"Validation error: {str(e)}")
+            # abort(400, f"Validation error: {str(e)}")
+            abort(400, _("Validation error: %(error)s", error=str(e)))
 
         user.save()
 
@@ -37,7 +39,7 @@ def user_registration():
 @app.doc(summary="Success user registration page", description="Success user registration page", tags=["pages"])
 def registration_success():
     """Success user registration page"""
-    return jsonify(message="Registration successfull")
+    return jsonify(message=_("Registration successfull"))
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -52,7 +54,7 @@ def user_login():
             session["username"] = user.username
             return redirect(url_for("login_success"))
         else:
-            form.username.errors += ("User identification error",)
+            form.username.errors += (_("User identification error"),)
 
     context = {"form": form}
 
@@ -63,4 +65,5 @@ def user_login():
 @app.doc(summary="Success user login page", description="Success user login page", tags=["pages"])
 def login_success():
     """Success user login page"""
-    return jsonify(message=f"Wellcome, {session.get("username")}!")
+    # return jsonify(message=f"Wellcome, {session.get("username")}!")
+    return jsonify(message=_("Wellcome, %(username)s!", username=session.get("username")))

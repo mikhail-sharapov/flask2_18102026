@@ -5,7 +5,7 @@ from api.models.author import AuthorModel
 from sqlalchemy.exc import SQLAlchemyError
 from api.schemas.author import author_schema, authors_schema, edit_author_schema, AuthorSchema
 from apiflask.fields import String
-
+from flask_babel import _
 
 @app.post("/authors")
 @app.auth_required(token_auth, ["admin"])
@@ -18,7 +18,7 @@ def create_author(author):
         db.session.add(author)
         db.session.commit()
     except Exception as e:
-        abort(503, f"Database error: {str(e)}")
+        abort(503, _("Database error: %(error)s", error=str(e)))
     return author
 
 
@@ -36,7 +36,7 @@ def get_authors():
 @app.doc(summary="Get author by id", description="Get author by id", tags=["authors"], responses=[200])
 def get_author_by_id(author_id: int):
     """Get author by id"""
-    author = db.get_or_404(AuthorModel, author_id, description=f"Author with id={author_id} not found")
+    author = db.get_or_404(AuthorModel, author_id, description=_("Author with id=%(author_id)s not found", author_id=author_id))
     return author
 
 
@@ -47,7 +47,7 @@ def get_author_by_id(author_id: int):
 @app.doc(summary="Edit author", description="Edit authors", tags=["authors"], responses=[201,404,503])
 def edit_author(author_id, author_data):
     """Edit author by id"""
-    author = db.get_or_404(AuthorModel, author_id, description=f"Author with id={author_id} not found")
+    author = db.get_or_404(AuthorModel, author_id, description=_("Author with id=%(author_id)s not found", author_id=author_id))
 
     try:
         for key, value in author_data.items():
@@ -57,7 +57,7 @@ def edit_author(author_id, author_data):
         return author
     except SQLAlchemyError as e:
         db.session.rollback()
-        abort(503, f"Database error: {str(e)}")
+        abort(503, _("Database error: %(error)s", error=str(e)))
 
 
 @app.delete("/authors/<int:author_id>")
@@ -66,12 +66,12 @@ def edit_author(author_id, author_data):
 @app.doc(summary="Delete author", description="Delete authors", tags=["authors"], responses=[200,503])
 def delete_author(author_id):
     """Delete author by id"""
-    author = db.get_or_404(AuthorModel, author_id, description=f"Author with id={author_id} not found")
+    author = db.get_or_404(AuthorModel, author_id, description=_("Author with id=%(author_id)s not found", author_id=author_id))
     db.session.delete(author)
     try:
         db.session.commit()
-        return {"message": f"Author with id {author_id} has deleted."}
+        return {"message": _("Author with id %(author_id)s has deleted.", author_id=author_id)}
     except SQLAlchemyError as e:
         db.session.rollback()
-        abort(503, f"Database error: {str(e)}")
+        abort(503, _("Database error: %(error)s", error=str(e)))
 

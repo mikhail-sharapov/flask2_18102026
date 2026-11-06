@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-03 11:46+0300\n"
-"PO-Revision-Date: 2026-11-03 11:47+0300\n"
+"POT-Creation-Date: 2026-11-06 12:15+0300\n"
+"PO-Revision-Date: 2026-11-06 12:31+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
 "Language-Team: ru <LL@li.org>\n"
@@ -19,12 +19,58 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: api/handlers/user.py:17
+#: api/handlers/author.py:21 api/handlers/author.py:60
+#: api/handlers/author.py:76 api/handlers/quote.py:58 api/handlers/quote.py:74
+#: api/handlers/quote.py:114
+#, python-format
+msgid "Database error: %(error)s"
+msgstr "Ошибка БД: %(error)s"
+
+#: api/handlers/author.py:39 api/handlers/author.py:50
+#: api/handlers/author.py:69 api/handlers/quote.py:92 api/handlers/quote.py:104
+#, python-format
+msgid "Author with id=%(author_id)s not found"
+msgstr "Автор с id=%(author_id)s не найден"
+
+#: api/handlers/author.py:73
+#, python-format
+msgid "Author with id %(author_id)s has deleted."
+msgstr "Автор с id %(author_id)s успешно удален."
+
+#: api/handlers/index.py:27 api/handlers/quote.py:111
+#, python-format
+msgid "Validation error: %(error)s"
+msgstr "Ошибка валидации: %(error)s"
+
+#: api/handlers/index.py:42
+msgid "Registration successfull"
+msgstr "Регистрация выполнена успешно"
+
+#: api/handlers/index.py:57
+msgid "User identification error"
+msgstr "Ошибка идентификации пользователя"
+
+#: api/handlers/index.py:69
+#, python-format
+msgid "Wellcome, %(username)s!"
+msgstr "Добро пожаловать, %(username)s!"
+
+#: api/handlers/quote.py:28 api/handlers/quote.py:48 api/handlers/quote.py:67
+#, python-format
+msgid "Quote with id=%(quote_id)s not found"
+msgstr "Цитата с id=%(quote_id)s не найдена"
+
+#: api/handlers/quote.py:71
+#, python-format
+msgid "Quote with id %(quote_id)s has deleted."
+msgstr "Цитата с id %(quote_id)s успешно удалена."
+
+#: api/handlers/user.py:16
 #, python-format
 msgid "User with id=%(user_id)s not found"
 msgstr "Пользователь с id=%(user_id)s не найден"
 
-#: api/handlers/user.py:37
+#: api/handlers/user.py:32
 msgid "Create new user and save to db"
-msgstr "Создать нового пользователя и сохранить в БД"
+msgstr "Создать пользователя и сохранить в БД"
 
