@@ -26,10 +26,6 @@ class QuoteSchema(ma.SQLAlchemySchema):
     rating = ma.auto_field(validate=rating_validate) #strict=True,
 
 
-class FilterQuoteSchema(Schema):
-    keyword = String()
-
-
 quote_schema = QuoteSchema(exclude=["author_id"])
 quotes_schema = QuoteSchema(many=True, exclude=["author"])
 
