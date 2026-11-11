@@ -1,7 +1,7 @@
 from api import db
 import sqlalchemy as sa
 
-
+# Таблица для ролей пользователя
 users_roles = db.Table(
     "users_roles",
     sa.Column("user_id", sa.Integer, sa.ForeignKey("users.id")),
